@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-mahender-batch17"
+		},
+		"FileServer1_password": {
+			"value": ""
+		},
+		"SqlServer1onprem_password": {
+			"value": ""
+		},
+		"ls_adls_accountKey": {
+			"value": ""
+		},
+		"ls_sqldb_password": {
+			"value": ""
+		},
+		"FileServer1_properties_typeProperties_host": {
+			"value": "C:\\ADFProject"
+		},
+		"FileServer1_properties_typeProperties_userId": {
+			"value": "koremahender1996@gmail.com"
+		},
+		"SqlServer1onprem_properties_typeProperties_server": {
+			"value": "kore-mahender\\SQLEXPRESS"
+		},
+		"SqlServer1onprem_properties_typeProperties_database": {
+			"value": "sqltest"
+		},
+		"SqlServer1onprem_properties_typeProperties_userName": {
+			"value": "sa"
+		},
+		"ls_adls_properties_typeProperties_url": {
+			"value": "https://adlsmahenderbatch17.dfs.core.windows.net/"
+		},
+		"ls_rest_api_properties_typeProperties_url": {
+			"value": "https://dummy.restapiexample.com/"
+		},
+		"ls_restapi_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		},
+		"ls_sqldb_properties_typeProperties_server": {
+			"value": "server-mahender-batch17.database.windows.net"
+		},
+		"ls_sqldb_properties_typeProperties_database": {
+			"value": "azuresqldb"
+		},
+		"ls_sqldb_properties_typeProperties_userName": {
+			"value": "mahenderkore"
+		}
+	}
+}

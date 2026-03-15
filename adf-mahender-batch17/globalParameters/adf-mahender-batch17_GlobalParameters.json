@@ -1,0 +1,10 @@
+{
+	"Container": {
+		"type": "string",
+		"value": "gen2container"
+	},
+	"TargetPath": {
+		"type": "string",
+		"value": "target/newfolder"
+	}
+}
