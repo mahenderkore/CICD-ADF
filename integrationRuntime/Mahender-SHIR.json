@@ -1,0 +1,9 @@
+{
+	"name": "Mahender-SHIR",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"selfContainedInteractiveAuthoringEnabled": true
+		}
+	}
+}

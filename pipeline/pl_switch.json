@@ -1,0 +1,87 @@
+{
+	"name": "pl_switch",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.FileName",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "emp",
+							"activities": [
+								{
+									"name": "Execute Pipeline empfiles",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_allempfiles",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
+						},
+						{
+							"value": "append",
+							"activities": [
+								{
+									"name": "Execute Pipeline append",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_Appendvar2",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Fail when no matches",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "No Matched Input Case",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "emp"
+			}
+		},
+		"folder": {
+			"name": "Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-03-15T10:02:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

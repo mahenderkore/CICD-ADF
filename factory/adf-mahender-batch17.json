@@ -1,0 +1,21 @@
+{
+	"name": "adf-mahender-batch17",
+	"properties": {
+		"globalParameters": {
+			"Container": {
+				"type": "string",
+				"value": "gen2container"
+			},
+			"TargetPath": {
+				"type": "string",
+				"value": "target/newfolder"
+			}
+		}
+	},
+	"location": "westcentralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e3a09791-3c1d-4f34-bf7a-171fe9312cbe",
+		"tenantId": "94b49a24-6c05-46f5-a901-03e67b76f33a"
+	}
+}

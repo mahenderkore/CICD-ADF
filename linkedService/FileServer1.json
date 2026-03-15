@@ -1,0 +1,17 @@
+{
+	"name": "FileServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\ADFProject",
+			"userId": "koremahender1996@gmail.com",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhZjZiMzg2Yy1mNTZkLTRiZDktOTg0Ni02MDIyODNlM2MxMmMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Mahender-SHIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,51 @@
+{
+	"name": "pl_scriptActivity_Query",
+	"properties": {
+		"activities": [
+			{
+				"name": "Script",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "ls_sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "select * from dbo.salesitems"
+						},
+						{
+							"parameters": [
+								{
+									"name": "Playername",
+									"type": "String",
+									"value": "Kohli",
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "select * from dbo.iplteams \nwhere name = @playername"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"folder": {
+			"name": "Exercise"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-03-15T10:51:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

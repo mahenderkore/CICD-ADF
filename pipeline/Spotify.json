@@ -1,0 +1,316 @@
+{
+	"name": "Spotify",
+	"properties": {
+		"activities": [
+			{
+				"name": "Incremental load for all",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.TableList",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Old Watermark value",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select watermarkValue as oldWatermarkValue from [dbo].[watermarktable]\nwhere tableName = '@{item().TableName}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_sql_watermarktbl",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@item().SchemaName",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "CurretTimeStamp",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "CurrentTimeStamp",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "New WatermarkValue",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select max(@{item().WatermarkColumn}) as NewWatermarkValue \nfrom @{item().SchemaName}.@{item().TableName}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_source_sql1",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@item().SchemaName",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										},
+										"WatermarkColumn": {
+											"value": "@item().WatermarkColumn",
+											"type": "Expression"
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "New Records Check using Water mark",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Old Watermark value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "CurretTimeStamp",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "New WatermarkValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(\n    activity('New WatermarkValue').output.firstRow.NewWatermarkValue,\n    activity('Old Watermark value').output.firstRow.oldWatermarkValue\n)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data sql to adls",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT *\nFROM @{item().SchemaName}.@{item().TableName}\nWHERE @{item().WatermarkColumn} > \n'@{activity('Old Watermark value').output.firstRow.OldWatermarkValue}'",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "ParquetSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "ParquetWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_source_sql1",
+												"type": "DatasetReference",
+												"parameters": {
+													"SchemaName": {
+														"value": "@item().SchemaName",
+														"type": "Expression"
+													},
+													"TableName": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													},
+													"WatermarkColumn": {
+														"value": "@item().WatermarkColumn",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_target_adls1",
+												"type": "DatasetReference",
+												"parameters": {
+													"FileName": {
+														"value": "@concat(item().TableName,'_',variables('CurrentTimeStamp'))",
+														"type": "Expression"
+													},
+													"Container": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "update WatermarkValue",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Copy data sql to adls",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_write_watermark]",
+											"storedProcedureParameters": {
+												"last_updated": {
+													"value": {
+														"value": "@activity('New WatermarkValue').output.firstRow.NewWatermarkValue",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"tableName": {
+													"value": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "ls_sqldb",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"TableList": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"TableName": "DimArtist",
+						"SchemaName": "dbo",
+						"WatermarkColumn": "updated_at"
+					},
+					{
+						"TableName": "DimDate",
+						"SchemaName": "dbo",
+						"WatermarkColumn": "date"
+					},
+					{
+						"TableName": "DimTrack",
+						"SchemaName": "dbo",
+						"WatermarkColumn": "updated_at"
+					},
+					{
+						"TableName": "DimUser",
+						"SchemaName": "dbo",
+						"WatermarkColumn": "updated_at"
+					},
+					{
+						"TableName": "FactStream",
+						"SchemaName": "dbo",
+						"WatermarkColumn": "stream_timestamp"
+					}
+				]
+			}
+		},
+		"variables": {
+			"CurrentTimeStamp": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "AzureProject"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-02-28T06:28:39Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,21 @@
+{
+	"name": "SqlServer1onprem",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "kore-mahender\\SQLEXPRESS",
+			"database": "sqltest",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1ZDQ4ZmNmMC1kNTRlLTRmZjYtODYxYi1hNWMwMDcxMmVkZWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Mahender-SHIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
