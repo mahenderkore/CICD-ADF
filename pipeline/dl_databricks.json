@@ -1,0 +1,42 @@
+{
+	"name": "dl_databricks",
+	"properties": {
+		"activities": [
+			{
+				"name": "adlsconnectdbk",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/sindhujakanna30@gmail.com/adlsconnectdbk",
+					"baseParameters": {
+						"file": {
+							"value": "@pipeline().parameters.FileName",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_dbk",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "AzureProject"
+		},
+		"annotations": []
+	}
+}
