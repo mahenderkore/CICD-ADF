@@ -14,6 +14,9 @@
 		"ls_adls_accountKey": {
 			"value": ""
 		},
+		"ls_dbk_accessToken": {
+			"value": ""
+		},
 		"ls_sqldb_password": {
 			"value": ""
 		},
@@ -34,6 +37,9 @@
 		},
 		"ls_adls_properties_typeProperties_url": {
 			"value": "https://adlsmahenderbatch17.dfs.core.windows.net/"
+		},
+		"ls_dbk_properties_typeProperties_existingClusterId": {
+			"value": "0316-051125-k9ua08ao"
 		},
 		"ls_rest_api_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/"

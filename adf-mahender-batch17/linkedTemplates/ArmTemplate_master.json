@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_adls'"
 		},
+		"ls_dbk_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_dbk'"
+		},
 		"ls_sqldb_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqldb'"
@@ -46,6 +50,10 @@
 		"ls_adls_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adlsmahenderbatch17.dfs.core.windows.net/"
+		},
+		"ls_dbk_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0316-051125-k9ua08ao"
 		},
 		"ls_rest_api_properties_typeProperties_url": {
 			"type": "string",
@@ -97,11 +105,17 @@
 					"ls_adls_accountKey": {
 						"value": "[parameters('ls_adls_accountKey')]"
 					},
+					"ls_dbk_accessToken": {
+						"value": "[parameters('ls_dbk_accessToken')]"
+					},
 					"ls_sqldb_password": {
 						"value": "[parameters('ls_sqldb_password')]"
 					},
 					"ls_adls_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_properties_typeProperties_url')]"
+					},
+					"ls_dbk_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('ls_dbk_properties_typeProperties_existingClusterId')]"
 					},
 					"ls_rest_api_properties_typeProperties_url": {
 						"value": "[parameters('ls_rest_api_properties_typeProperties_url')]"
